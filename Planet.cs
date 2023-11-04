@@ -2,17 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShipScript : MonoBehaviour
+public class Planet : MonoBehaviour
 {
-    private Planet planet;
-    private float planetMass;
+    public float mass;
 
     // Start is called before the first frame update
     void Start()
     {
-        // ! Not sure if this finds the closest
-        planet = FindObjectOfType<Planet>();
-        planetMass = planet.mass;
+
     }
 
     // Update is called once per frame
