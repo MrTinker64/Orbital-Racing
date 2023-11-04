@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ShipScript : MonoBehaviour
 {
+    private float shipMass;
+
     private Planet planet;
     private float planetMass;
 
