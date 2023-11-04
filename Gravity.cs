@@ -2,19 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Gravity : MonoBehaviour
+public static class Gravity
 {
-    public float G;
+    public const float G = 6.674f;
 
-    // Start is called before the first frame update
-    void Start()
+    public static Vector2 GravityForce(Vector3 pos1, Vector3 pos2, float m1, float m2)
     {
+        Vector2 directionToPlanet = pos2 - pos1;
+        float distanceSquared = directionToPlanet.sqrMagnitude;
+        float gravityMagnitude = G * (m1 * m2) / distanceSquared;
+        Vector2 gravityForce = directionToPlanet.normalized * gravityMagnitude;
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        return gravityForce;
     }
 }
