@@ -6,18 +6,20 @@ public class Ship : MonoBehaviour
 {
     public float shipMass;
     public Rigidbody2D shipRB;
+    private Vector3 startPosition;
 
     private Planet planet;
     private float planetMass;
-    private Vector3 planetPos;
 
     // Start is called before the first frame update
     void Start()
     {
+        startPosition = transform.position;
+        setup();
+
         // ! Not sure if this finds the closest
         planet = FindObjectOfType<Planet>();
         planetMass = planet.mass;
-        planetPos = planet.transform.position;
     }
 
     // Update is called once per frame
@@ -25,13 +27,24 @@ public class Ship : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            shipRB.velocity += Vector2.up;
+            shipRB.velocity += Vector2.up * 2;
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            setup();
         }
     }
 
     // FixedUpdate is called consistently regardless of framerate
     void FixedUpdate()
     {
-        shipRB.AddForce(Gravity.Force(transform.position, planetPos, shipMass, planetMass));
+        shipRB.AddForce(Gravity.Force(transform.position, planet.transform.position, shipMass, planetMass));
+    }
+
+    void setup()
+    {
+        transform.position = startPosition;
+        shipRB.velocity = Vector2.up * 5;
     }
 }
