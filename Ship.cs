@@ -30,6 +30,8 @@ public class Ship : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Vector2 toPlanet = (planet.transform.position - transform.position).normalized;
+
         distance = Vector3.Distance(transform.position, planet.transform.position);
 
         if (distance > 8)
@@ -46,6 +48,14 @@ public class Ship : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             shipRB.AddForce(-transform.up * thrustPower, ForceMode2D.Impulse);
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            shipRB.AddForce(-transform.right * thrustPower, ForceMode2D.Impulse);
+        }
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            shipRB.AddForce(transform.right * thrustPower, ForceMode2D.Impulse);
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
