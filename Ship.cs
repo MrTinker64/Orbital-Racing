@@ -11,6 +11,8 @@ public class Ship : MonoBehaviour
     private Planet planet;
     private float planetMass;
 
+    private float distance;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +27,13 @@ public class Ship : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        distance = Vector3.Distance(transform.position, planet.transform.position);
+
+        if (distance > 8)
+        {
+            setup();
+        }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             shipRB.velocity += Vector2.up * 2;
