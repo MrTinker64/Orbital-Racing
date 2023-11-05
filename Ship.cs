@@ -83,24 +83,4 @@ public class Ship : MonoBehaviour
             Setup();
         }
     }
-
-    // FixedUpdate is called consistently regardless of framerate
-    void FixedUpdate()
-    {
-        shipRB.AddForce(Gravity.Force(transform.position, planet.transform.position, shipMass, planetMass));
-        this.Orient();
-    }
-
-    void Orient()
-    {
-        Vector2 directionToPlanet = (planet.transform.position - transform.position).normalized;
-        float angle = Mathf.Atan2(directionToPlanet.y, directionToPlanet.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.AngleAxis(angle + 180, Vector3.forward); // Subtracting 90 degrees because we want the ship to face perpendicular to the planet
-    }
-
-    void setup()
-    {
-        transform.position = startPosition;
-        shipRB.velocity = Vector2.up * 5;
-    }
 }
