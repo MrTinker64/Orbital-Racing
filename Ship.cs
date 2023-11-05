@@ -6,6 +6,9 @@ public class Ship : MonoBehaviour
 {
     public float shipMass;
     public Rigidbody2D shipRB;
+    public float thrustPower;
+    public float torqueAmount;
+
     private Vector3 startPosition;
 
     private Planet planet;
@@ -34,11 +37,16 @@ public class Ship : MonoBehaviour
             setup();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            shipRB.velocity += Vector2.up * 2;
-        }
+        // Keybindings
 
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            shipRB.AddForce(transform.up * thrustPower, ForceMode2D.Impulse);
+        }
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            shipRB.AddForce(-transform.up * thrustPower, ForceMode2D.Impulse);
+        }
         if (Input.GetKeyDown(KeyCode.R))
         {
             setup();
@@ -51,7 +59,7 @@ public class Ship : MonoBehaviour
         shipRB.AddForce(Gravity.Force(transform.position, planet.transform.position, shipMass, planetMass));
         this.Orient();
     }
-    // TODO work on orient
+
     void Orient()
     {
         Vector2 directionToPlanet = (planet.transform.position - transform.position).normalized;
