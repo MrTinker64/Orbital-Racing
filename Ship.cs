@@ -20,7 +20,7 @@ public class Ship : MonoBehaviour
     void Start()
     {
         startPosition = transform.position;
-        setup();
+        Setup();
 
         // ! Not sure if this finds the closest
         planet = FindObjectOfType<Planet>();
@@ -30,17 +30,38 @@ public class Ship : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 toPlanet = (planet.transform.position - transform.position).normalized;
-
         distance = Vector3.Distance(transform.position, planet.transform.position);
 
         if (distance > 8)
         {
-            setup();
+            Setup();
         }
 
-        // Keybindings
+        CheckKeybinds();
+    }
 
+    // FixedUpdate is called consistently regardless of framerate
+    void FixedUpdate()
+    {
+        shipRB.AddForce(Gravity.Force(transform.position, planet.transform.position, shipMass, planetMass));
+        Orient();
+    }
+
+    void Orient()
+    {
+        Vector2 directionToPlanet = (planet.transform.position - transform.position).normalized;
+        float angle = Mathf.Atan2(directionToPlanet.y, directionToPlanet.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.AngleAxis(angle + 180, Vector3.forward); // Subtracting 90 degrees because we want the ship to face perpendicular to the planet
+    }
+
+    void Setup()
+    {
+        transform.position = startPosition;
+        shipRB.velocity = Vector2.up * 5;
+    }
+
+    void CheckKeybinds()
+    {
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             shipRB.AddForce(transform.up * thrustPower, ForceMode2D.Impulse);
@@ -59,7 +80,7 @@ public class Ship : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-            setup();
+            Setup();
         }
     }
 
