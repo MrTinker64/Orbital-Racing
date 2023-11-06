@@ -1,44 +1,49 @@
 using UnityEngine;
+using System.Collections.Generic;
+using Unity.Mathematics;
 
 [RequireComponent(typeof(LineRenderer))]
 public class OrbitVisualizer : MonoBehaviour
 {
-    public Rigidbody2D shipRigidbody;
-    public Rigidbody2D planetRigidbody;
+    public Rigidbody2D shipRB;
+    public int orbitResolution = 100; // How many points to calculate
+    public int orbitPredictTime = 2; // Seconds
 
     private LineRenderer lineRenderer;
+    private Planet planet;
 
-    public int orbitResolution = 100; // How many points to calculate
-    public float timeStep = 0.1f; // Time step for each point calculation
+    private float shipMass;
 
-    private void Awake()
+    void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.positionCount = orbitResolution;
+        planet = FindObjectOfType<Planet>(); // Assumes there is only one Planet object
+        shipMass = shipRB.mass;
     }
 
-    private void FixedUpdate()
+    void Update()
     {
         DrawOrbit();
     }
 
-    private void DrawOrbit()
+    void DrawOrbit()
     {
-        Vector3[] orbitPath = new Vector3[orbitResolution];
+        Vector3[] positionsArray = new Vector3[orbitResolution];
+        float timeStep = orbitPredictTime / (float)orbitResolution;
 
-        Vector2 previousPosition = shipRigidbody.position;
-        Vector2 velocity = shipRigidbody.velocity;
+        Vector2 predictedVelocity = shipRB.velocity * math.PI;
+        Vector2 predictedPosition = transform.position;
 
         for (int i = 0; i < orbitResolution; i++)
         {
-            Vector2 gravityForce = Gravity.Force(previousPosition, planetRigidbody.position, shipRigidbody.mass, planetRigidbody.mass);
-            Vector2 acceleration = gravityForce / shipRigidbody.mass;
-            velocity += acceleration * timeStep;
-            previousPosition += velocity * timeStep;
-
-            orbitPath[i] = new Vector3(previousPosition.x, previousPosition.y, 0f);
+            Vector2 gravityForce = Gravity.Force(predictedPosition, planet.transform.position, shipMass, planet.mass);
+            Vector2 gravityAcceleration = gravityForce / shipMass;
+            predictedVelocity += gravityAcceleration * timeStep;
+            predictedPosition += predictedVelocity * timeStep;
+            positionsArray[i] = new Vector3(predictedPosition.x, predictedPosition.y);
         }
 
-        lineRenderer.SetPositions(orbitPath);
+        lineRenderer.positionCount = positionsArray.Length;
+        lineRenderer.SetPositions(positionsArray);
     }
 }
